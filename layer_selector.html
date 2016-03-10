@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet control example with createLayer | CartoDB.js</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+  <style>
+    html, body, #map {
+      height: 90%;
+	  width: 85%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- include cartodb.js library -->
+  <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+
+  <script>
+    function main() {
+      var map = new L.Map('map', {
+        zoomControl: false,
+        center: [70, 100],
+        zoom: 3
+      });
+	  new L.Control.Zoom({ position: 'topleft' }).addTo(map);
+      L.tileLayer('http://cartocdn_b.global.ssl.fastly.net/base-light/{z}/{x}/{y}.png', {
+        attribution: 'CartoDB'
+      }).addTo(map);
+      var layer1;
+      var layer2;
+      cartodb.createLayer(map, 'https://wizmaps.cartodb.com/api/v2/viz/e92ac11e-e56c-11e5-ba00-0e5db1731f59/viz.json')
+      .addTo(map)
+      .done(function(layer)
+      {
+        layer1 = layer;
+        cartodb.createLayer(map, 'https://wizmaps.cartodb.com/api/v2/viz/e92ac11e-e56c-11e5-ba00-0e5db1731f59/viz.json')
+        .done(function(layer)
+        {
+          layer2 = layer;
+          
+          var overlayMaps = {
+            "Layer1": layer1,
+            "Layer2": layer2
+          };
+          L.control.layers(null, overlayMaps).addTo(map);
+        });
+      });
+      }//main
+      // you could use $(window).load(main);
+      window.onload = main;
+    </script>
+  </body>
+  </html>
